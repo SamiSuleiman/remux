@@ -3,7 +3,7 @@
 set -euo pipefail
 
 function save() {
-  local tmux_state=$(tmux lsp -aF '#{session_name}>#{window_index}>#{window_layout}>#{pane_title}>#{pane_current_command}')
+  local tmux_state=$(tmux lsp -aF '#{session_name}>#{window_index}>#{window_layout}>#{pane_index}>#{pane_current_command}')
   # the object state, each key is a session name,
   # each session has a list of windows, each window has a layout and an index and a list of panes
   # each pane has a command
@@ -14,10 +14,10 @@ function save() {
     local session_name=$(echo "$line" | cut -d'>' -f1)
     local window_index=$(echo "$line" | cut -d'>' -f2)
     local window_layout=$(echo "$line" | cut -d'>' -f3)
-    local pane_title=$(echo "$line" | cut -d'>' -f4)
+    local pane_index=$(echo "$line" | cut -d'>' -f4)
     local pane_command=$(echo "$line" | cut -d'>' -f5)
   
-    printf 'Session: %s, Window: %s, Layout: %s, Pane: %s, Command: %s\n' "$session_name" "$window_index" "$window_layout" "$pane_title" "$pane_command"
+    printf 'Session: %s, Window: %s, Layout: %s, Pane: %s, Command: %s\n' "$session_name" "$window_index" "$window_layout" "$pane_index" "$pane_command"
 
   done <<< "$tmux_state"
 }
