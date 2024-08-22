@@ -4,8 +4,8 @@ set -euo pipefail
 
 remux_state_file=~/.local/share/remux.txt
 
-function tmux_session_exists(){
-  local session_name=$1
+function tmux_session_exists() {
+  local session_name=${1}
   return $(tmux has-session -t ${session_name} &> /dev/null && echo 0 || echo 1)
 }
 
@@ -18,7 +18,12 @@ function save() {
 }
 
 function restore() {
-  local remux_state=''
+  local remux_state=$(<"${remux_state_file}")
+
+  if [ -z "${remux_state}" ]; then
+    echo "No remux save found"
+    exit 1
+  fi
 
   while IFS= read -r line; do
     local session_name=$(echo "$line" | cut -d'>' -f1)
@@ -28,11 +33,9 @@ function restore() {
     local pane_command=$(echo "$line" | cut -d'>' -f5)
     local pane_path=$(echo "$line" | cut -d'>' -f6)
 
-    # if tmux_session_exists $session_name; then
-    #   echo "Exists"
-    # else
-    #   echo "Doesn't exist"
-    # fi 
+    if ! tmux_session_exists ${session_name}; then
+      tmux new-session -d -s ${session_name}
+    fi 
 
     printf 'Session: %s, Window: %s, Layout: %s, Pane: %s, Command: %s, Path: %s\n' "${session_name}" "${window_index}" "${window_layout}" "${pane_index}" "${pane_command}" "${pane_path}"
 
