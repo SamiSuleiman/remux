@@ -7,7 +7,7 @@ function tmux_session_exists(){
 }
 
 function save() {
-  local tmux_state=$(tmux lsp -aF '#{session_name}>#{window_index}>#{window_layout}>#{pane_index}>#{pane_current_command}')
+  local tmux_state=$(tmux lsp -aF '#{session_name}>#{window_index}>#{window_layout}>#{pane_index}>#{pane_current_command}>#{pane_current_path}')
   local remux_state='{}'
 
   # Use a while loop to process each line
@@ -17,14 +17,15 @@ function save() {
     local window_layout=$(echo "$line" | cut -d'>' -f3)
     local pane_index=$(echo "$line" | cut -d'>' -f4)
     local pane_command=$(echo "$line" | cut -d'>' -f5)
+    local pane_path=$(echo "$line" | cut -d'>' -f6)
 
-    if tmux_session_exists $session_name; then
-      echo "Exists"
-    else
-      echo "Doesn't exist"
-    fi 
+    # if tmux_session_exists $session_name; then
+    #   echo "Exists"
+    # else
+    #   echo "Doesn't exist"
+    # fi 
 
-    printf 'Session: %s, Window: %s, Layout: %s, Pane: %s, Command: %s\n' "$session_name" "$window_index" "$window_layout" "$pane_index" "$pane_command"
+    printf 'Session: %s, Window: %s, Layout: %s, Pane: %s, Command: %s, Path: %s\n' "$session_name" "$window_index" "$window_layout" "$pane_index" "$pane_command" "$pane_path"
 
 
   done <<< "$tmux_state"
