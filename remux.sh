@@ -71,9 +71,8 @@ function restore() {
     fi
 
     if ! tmux_pane_exists ${session_name} ${window_index} ${pane_index}; then
-      tmux split-window -d -t ${session_name}:${window_index} -c ${pane_path}
+      tmux split-window -d -t ${session_name}:${window_index} -c ${pane_path} -l 1 -h
     fi
-
   done <<< "${remux_state}"
 }
 
