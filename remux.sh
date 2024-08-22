@@ -2,11 +2,12 @@
 
 set -euo pipefail
 
+function tmux_session_exists(){
+  return $(tmux has-session -t $1 &> /dev/null && echo 0 || echo 1)
+}
+
 function save() {
   local tmux_state=$(tmux lsp -aF '#{session_name}>#{window_index}>#{window_layout}>#{pane_index}>#{pane_current_command}')
-  # the object state, each key is a session name,
-  # each session has a list of windows, each window has a layout and an index and a list of panes
-  # each pane has a command
   local remux_state='{}'
 
   # Use a while loop to process each line
@@ -16,14 +17,21 @@ function save() {
     local window_layout=$(echo "$line" | cut -d'>' -f3)
     local pane_index=$(echo "$line" | cut -d'>' -f4)
     local pane_command=$(echo "$line" | cut -d'>' -f5)
-  
+
+    if tmux_session_exists $session_name; then
+      echo "Exists"
+    else
+      echo "Doesn't exist"
+    fi 
+
     printf 'Session: %s, Window: %s, Layout: %s, Pane: %s, Command: %s\n' "$session_name" "$window_index" "$window_layout" "$pane_index" "$pane_command"
+
 
   done <<< "$tmux_state"
 }
 
 function restore() {
-  printf 'Restoring tmux state...'
+  echo "message"
 }
 
 while getopts ":sr" opt; do
