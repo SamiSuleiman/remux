@@ -97,6 +97,9 @@ case $COMMAND in
   [rR] | restore)
     restore
     ;;
+  [dD] | dump)
+    [[ -f "${remux_state_file}" ]] && cat "${remux_state_file}" || echo "No remux save found"
+    ;;
   *)
     echo "Usage: remux [save|restore]"
     exit 1
