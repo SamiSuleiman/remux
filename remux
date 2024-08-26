@@ -88,16 +88,17 @@ function restore() {
   done <<< "${remux_state}"
 }
 
-while getopts ":sr" opt; do
-  case $opt in
-    s)
-      save
-      ;;
-    r)
-      restore
-      ;;
-    *)
-      echo "Invalid option: -$OPTARG" >&2
-      ;;
-  esac
-done
+COMMAND=$1
+
+case $COMMAND in
+  [sS] | save)
+    save
+    ;;
+  [rR] | restore)
+    restore
+    ;;
+  *)
+    echo "Usage: remux [save|restore]"
+    exit 1
+    ;;
+esac
