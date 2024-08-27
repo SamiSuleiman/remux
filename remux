@@ -88,6 +88,11 @@ function restore() {
   done <<< "${remux_state}"
 }
 
+if [ "$#" -eq 0 ]; then
+    echo "Usage: remux [save|restore]"
+    exit 1
+fi
+
 COMMAND=$1
 
 case $COMMAND in
