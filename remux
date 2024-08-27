@@ -92,10 +92,10 @@ function restore() {
       tmux split-window -d -t ${session_name}:${window_index} -c ${pane_path} -l 1 -v
       tmux select-layout -t ${session_name}:${window_index} ${window_layout}
     else
-      tmux send-keys -t ${session_name}:${window_index}.${pane_index} "cd ${pane_path}" Enter
+      tmux send-keys -t ${session_name}:${window_index}.${pane_index} "cd ${pane_path}" Enter c-l
     fi
     if [ -n "${pane_command}" ]; then
-      tmux send-keys -t ${session_name}:${window_index}.${pane_index} "${pane_command}" Enter
+      tmux send-keys -t ${session_name}:${window_index}.${pane_index} "${pane_command}" Enter c-l
     fi
   done <<< "${remux_state}"
 }
