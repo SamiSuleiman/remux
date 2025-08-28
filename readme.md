@@ -1,8 +1,13 @@
+### Requirements
+[tmux (duh)](https://github.com/tmux/tmux)   
+[fzf (for the `open` command)](https://github.com/junegunn/fzf) 
+
 ### Installation & Usage
 
 - Clone the script and add it to your `$PATH`
 - Run `remux s` to save the current state of Tmux
   > The state is saved to `~/.local/share/remux.txt`
+  > You can view this by running `remux d`
   > This is an example snapshot, never edit this manually:
   ```
   q>0>fish>4926,190x48,0,0[190x24,0,0,1,190x23,0,25,2]>0>fish>/home/sami/Documents/projs/remux
@@ -24,3 +29,4 @@
   q>2>b>0fee,190x48,0,0[190x12,0,0{95x12,0,0,10,47x12,96,0,16,46x12,144,0,17},190x11,0,13,15,190x11,0,25{49x11,0,25,11,140x11,50,25,14},190x11,0,37{95x11,0,37,12,94x11,96,37,13}]>7>fish>/home/sami
   ```
 - Run `remux r` to restore the saved state of Tmux
+- Run `remux o` to pick a directory to open a new session or attach to an existing session in

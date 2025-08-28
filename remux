@@ -4,6 +4,7 @@ set -euo pipefail
 
 REMUX_STATE_FILE=~/.local/share/remux.txt
 [ -z "${REMUX_COMMANDS_TO_IGNORE+x}" ] && REMUX_COMMANDS_TO_IGNORE=("bash" "zsh" "fish" "tmux" "sh" "ssh")
+[ -z "${REMUX_DIRS_TO_SEARCH+x}" ] && REMUX_DIRS_TO_SEARCH=("${HOME}" "${HOME}/medina/projs")
 
 function print_help() {
   printf "Usage: remux [(s)ave | (r)estore | (d)ump]\n"
@@ -45,6 +46,26 @@ function tmux_display_message() {
   if tmux run 2>/dev/null; then
     tmux display-message "${message}" &>/dev/null
   fi
+}
+
+function open() {
+  local dir=$(find "${REMUX_DIRS_TO_SEARCH[@]}" -maxdepth 1 -type d -exec realpath {} \; | fzf)
+  if [ -z "${dir}" ]; then
+    exit 1
+  fi
+  local session_name="___"$(basename $dir)"___"
+
+  if ! tmux_session_exists ${session_name}; then
+    tmux new-session -d -s ${session_name} -c "$dir"
+    tmux send-keys -t ${session_name}:1 Enter c-l
+  fi
+
+  if [ -v TMUX ]; then
+    tmux switch-client -t ${session_name}
+  else
+    tmux attach -t ${session_name}
+  fi
+
 }
 
 function save() {
@@ -111,6 +132,9 @@ fi
 command=$1
 
 case $command in
+[oO] | open)
+  open
+  ;;
 [sS] | save)
   save
   ;;
